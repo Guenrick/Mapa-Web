@@ -1,5 +1,3 @@
-// src/Controls/FullScreenControl.tsx
-
 import React, { useContext, useEffect } from 'react';
 import { FullScreen } from 'ol/control';
 import { Map as OlMap } from 'ol';
@@ -17,12 +15,11 @@ const FullScreenControl: React.FC = () => {
 
     const fullScreenControl = new FullScreen();
     
-    // CORREÇÃO AQUI: Usamos o método público para adicionar o controle
+    // Usei o método público para adicionar o controle
     map.addControl(fullScreenControl);
 
     // Função de limpeza
     return () => {
-      // CORREÇÃO AQUI: Usamos o método público para remover o controle
       map.removeControl(fullScreenControl);
     };
   }, [map]);

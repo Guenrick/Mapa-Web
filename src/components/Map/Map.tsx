@@ -1,33 +1,28 @@
 import React, { useRef, useState, useEffect, ReactNode } from "react";
-import "./Map.css"; // Certifique-se de que este arquivo existe ou remova a linha
+import "./Map.css";
 import { Map as OlMap, View } from "ol";
 import TileLayer from "ol/layer/Tile";
-// ALTERAÇÃO AQUI: Importamos o tipo 'Tile' e o renomeamos para 'TileSource' para maior clareza
+// Renomeei o Tile pra TileSource para maior clareza
 import { Tile as TileSource } from "ol/source";
-
-// --- Definição dos Tipos ---
 
 // Descreve as props que o componente Map espera receber
 interface MapProps {
-  children?: ReactNode; // 'children' é o tipo padrão para componentes aninhados
+  children?: ReactNode; 
   zoom: number;
   center: number[];
-  // ALTERAÇÃO AQUI: Usamos o tipo específico 'TileSource' em vez do genérico 'Source'
   tileSource: TileSource; 
-  setMap: (map: OlMap) => void; // Uma função que recebe a instância do mapa
+  setMap: (map: OlMap) => void; // Função que recebe a instância do mapa
 }
 
-// --- Componente Principal ---
-
 const Map: React.FC<MapProps> = ({ children, zoom, center, setMap, tileSource }) => {
-  const mapRef = useRef<HTMLDivElement>(null); // Tipamos a referência para um elemento Div
+  const mapRef = useRef<HTMLDivElement>(null); 
   const [map, setInternalMap] = useState<OlMap | null>(null); // O estado do mapa
 
   // Efeito para criar o mapa quando o componente é montado
   useEffect(() => {
-    if (!mapRef.current) return; // Garante que a div do mapa já existe
+    if (!mapRef.current) return; // Garante que a div do mapa existe
 
-    // Cria a camada base do mapa com a fonte de tiles que recebemos
+    // Cria a camada base do mapa com a fonte de tiles 
     const baseLayer = new TileLayer({
       source: tileSource,
     });
@@ -56,10 +51,11 @@ const Map: React.FC<MapProps> = ({ children, zoom, center, setMap, tileSource })
 
   return (
     <div ref={mapRef} className="ol-map">
-      {/* Renderiza componentes filhos, como os controles do mapa, se houver */}
+      {}
       {children}
     </div>
   );
 };
+
 
 export default Map;

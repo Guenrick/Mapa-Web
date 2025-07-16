@@ -2,69 +2,92 @@ import React, { useState, useEffect, FC } from 'react';
 import styled from 'styled-components';
 import apiClient from '../../services/openrouteservice.ts';
 
-// --- Styled Components (sem alterações) ---
-const RouteContainer = styled.div` /* ...código existente... */ `;
-const InputGroup = styled.div` /* ...código existente... */ `;
-const Label = styled.label` /* ...código existente... */ `;
-const Input = styled.input` /* ...código existente... */ `;
-const SuggestionsContainer = styled.ul` /* ...código existente... */ `;
-const SuggestionItem = styled.li` /* ...código existente... */ `;
+// Formatacao das caixas
+const RouteContainer = styled.div`
+  position: absolute;
+  top: 5%;
+  left: 3%;
+  z-index: 1000;
+  background: white;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  padding: 20px;
+`;
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  position: relative;
+`;
+const Label = styled.label`
+  font-weight: bold;
+  font-size: 17px;
+  margin-bottom: 5px;
+  color: #333;
+`;
+const Input = styled.input`
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 17px;
+  width: 100%;
+  box-sizing: border-box;
+`;
+const SuggestionsContainer = styled.ul``;
+const SuggestionItem = styled.li``;
 
-// --- Definições de Tipos (TypeScript) ---
-
-// Descreve a estrutura de uma sugestão de local da API
 interface SuggestionFeature {
-  properties: {
-    id: string;
-    label: string;
-  };
-  geometry: {
-    coordinates: number[];
-  };
+  properties: { id: string; label: string; };
+  geometry: { coordinates: number[]; };
 }
 
-// Descreve as props que o nosso componente Search recebe
+interface ApiResponse {
+  features: SuggestionFeature[];
+}
+
 interface SearchProps {
-  onRouteFound: (geometry: any) => void; // A geometria da rota
+  onRouteFound: (geometry: any) => void;
 }
 
 // --- Componente Principal ---
-
-// Definimos o tipo do nosso componente como React.FC (Functional Component)
-// e passamos o tipo de suas props
 const Search: FC<SearchProps> = ({ onRouteFound }) => {
-  // Estados com tipos explícitos
+  // AQUI DEFINIMOS OS ESTADOS (resolvemos o "Cannot find name 'setOriginSuggestions'")
   const [origin, setOrigin] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
-
   const [originSuggestions, setOriginSuggestions] = useState<SuggestionFeature[]>([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState<SuggestionFeature[]>([]);
-
   const [originCoords, setOriginCoords] = useState<number[] | null>(null);
   const [destinationCoords, setDestinationCoords] = useState<number[] | null>(null);
 
-  // Função para buscar sugestões, agora com parâmetros tipados
   const fetchSuggestions = async (query: string, field: 'origin' | 'destination') => {
     if (query.length < 3) {
       field === 'origin' ? setOriginSuggestions([]) : setDestinationSuggestions([]);
       return;
     }
     try {
-      const response = await apiClient.get('/v2/geocode/autocomplete', {
+      const response = await apiClient.get<ApiResponse>('v2/geocode/autocomplete', {
         params: { text: query }
       });
-      const suggestions: SuggestionFeature[] = response.data.features;
-      if (field === 'origin') {
-        setOriginSuggestions(suggestions);
+
+      if (response.data && Array.isArray(response.data.features)) {
+        if (field === 'origin') {
+          setOriginSuggestions(response.data.features);
+        } else {
+          setDestinationSuggestions(response.data.features);
+        }
       } else {
-        setDestinationSuggestions(suggestions);
+        field === 'origin' ? setOriginSuggestions([]) : setDestinationSuggestions([]);
       }
     } catch (error) {
-      console.error("Erro ao buscar sugestões:", error);
+      console.error("Falha na chamada de autocomplete:", error);
     }
   };
   
-  // Função para lidar com o clique, com parâmetros tipados
   const handleSuggestionClick = (suggestion: SuggestionFeature, field: 'origin' | 'destination') => {
     const locationName = suggestion.properties.label;
     const coordinates = suggestion.geometry.coordinates;
@@ -80,7 +103,6 @@ const Search: FC<SearchProps> = ({ onRouteFound }) => {
     }
   };
 
-  // useEffect para buscar a rota
   useEffect(() => {
     if (originCoords && destinationCoords) {
       const fetchRoute = async () => {
@@ -102,21 +124,13 @@ const Search: FC<SearchProps> = ({ onRouteFound }) => {
   }, [originCoords, destinationCoords]);
 
 
-  // O JSX não muda nada
   return (
     <RouteContainer>
-      {/* Campo de Origem */}
       <InputGroup>
         <Label htmlFor="origin">Origem</Label>
         <Input
-          id="origin"
-          type="text"
-          placeholder="Digite o local de origem"
-          value={origin}
-          onChange={(e) => {
-            setOrigin(e.target.value);
-            fetchSuggestions(e.target.value, 'origin');
-          }}
+          id="origin" type="text" placeholder="Digite o local de origem" value={origin}
+          onChange={(e) => { setOrigin(e.target.value); fetchSuggestions(e.target.value, 'origin'); }}
           autoComplete="off"
         />
         {originSuggestions.length > 0 && (
@@ -130,18 +144,11 @@ const Search: FC<SearchProps> = ({ onRouteFound }) => {
         )}
       </InputGroup>
 
-      {/* Campo de Destino */}
       <InputGroup>
         <Label htmlFor="destination">Destino</Label>
         <Input
-          id="destination"
-          type="text"
-          placeholder="Digite o local de destino"
-          value={destination}
-          onChange={(e) => {
-            setDestination(e.target.value);
-            fetchSuggestions(e.target.value, 'destination');
-          }}
+          id="destination" type="text" placeholder="Digite o local de destino" value={destination}
+          onChange={(e) => { setDestination(e.target.value); fetchSuggestions(e.target.value, 'destination'); }}
           autoComplete="off"
         />
         {destinationSuggestions.length > 0 && (

@@ -1,7 +1,9 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import './index.css'; // Mantenha se você usa este arquivo, senão pode apagar.
-import App from './App.tsx'; // CORREÇÃO AQUI
+import 'ol/ol.css'; 
+import './App.css';
+import App from './App.tsx';
 
 const rootElement = document.getElementById('root');
 

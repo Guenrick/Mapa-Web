@@ -3,7 +3,7 @@ import { Vector as VectorLayer_ol } from 'ol/layer'; // Renomeado para evitar co
 import { Vector as VectorSource } from 'ol/source';
 import { StyleLike } from 'ol/style/Style';
 import { Map as OlMap } from 'ol';
-import MapContext from '../components/Map/MapContext'; // CORREÇÃO DO CAMINHO
+import MapContext from '../components/Map/MapContext'; // caminho corrigido
 
 // Definindo os tipos
 interface MapContextType {

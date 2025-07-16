@@ -6,7 +6,6 @@ import VectorSource from 'ol/source/Vector';
 import { Feature } from 'ol';
 import { Style, Stroke } from 'ol/style';
 
-// Helper function
 const getColorForTravelMode = (mode: string): string => {
   switch (mode) {
     case 'driving-car': return '#4285F4';
@@ -16,7 +15,6 @@ const getColorForTravelMode = (mode: string): string => {
   }
 };
 
-// A PALAVRA 'EXPORT' AQUI É A PARTE MAIS IMPORTANTE
 export const useRouteLayer = (
   map: OlMap | null,
   coordinates: number[][] | null,
