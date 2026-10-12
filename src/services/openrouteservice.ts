@@ -9,9 +9,6 @@ apiClient.interceptors.request.use(
     // Pega a chave da API do ambiente
     const apiKey = process.env.REACT_APP_ORS_API_KEY;
 
-    // TESTE DECISIVO: VAMOS VER O QUE ESTÁ SENDO LIDO
-    //console.log("API Key sendo lida pelo serviço:", apiKey);
-
     if (!apiKey) {
       console.error("ERRO GRAVE: A variável REACT_APP_ORS_API_KEY está 'undefined'. Verifique o arquivo .env e REINICIE O SERVIDOR.");
       return Promise.reject(new Error("API Key is missing"));
