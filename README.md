@@ -4,8 +4,6 @@ Aplicação web de rotas construída com **React**, **TypeScript** e **OpenLayer
 
 O projeto foi feito para estudar o consumo de APIs de geoprocessamento e a integração de uma biblioteca de mapas com o ciclo de vida de componentes React.
 
-![Demonstração do Mapa-Web](docs/demo.png)
-
 ## Funcionalidades
 
 - **Autocompletar de endereços**: a partir de 3 caracteres, busca sugestões na API de geocodificação do OpenRouteService.
