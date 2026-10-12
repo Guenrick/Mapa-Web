@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# Mapa-Web
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Aplicação web de rotas construída com **React**, **TypeScript** e **OpenLayers**. O usuário digita a origem e o destino, escolhe os endereços nas sugestões de autocompletar e o mapa desenha a rota de carro entre os dois pontos.
 
-## Available Scripts
+O projeto foi feito para estudar o consumo de APIs de geoprocessamento e a integração de uma biblioteca de mapas com o ciclo de vida de componentes React.
 
-In the project directory, you can run:
+![Demonstração do Mapa-Web](docs/demo.png)
 
-### `npm start`
+## Funcionalidades
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Autocompletar de endereços**: a partir de 3 caracteres, busca sugestões na API de geocodificação do OpenRouteService.
+- **Cálculo de rota**: assim que origem e destino são escolhidos, a rota de carro é pedida à API de direções.
+- **Desenho da rota no mapa**: a geometria retornada é convertida de EPSG:4326 para EPSG:3857 e desenhada como uma camada vetorial sobre o mapa base do OpenStreetMap.
+- **Componentização do mapa**: o mapa, as camadas (tile e vetor) e os controles (tela cheia) foram separados em componentes e hooks reutilizáveis.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tecnologias
 
-### `npm test`
+| Camada | Ferramentas |
+| --- | --- |
+| Interface | React 19, TypeScript, styled-components |
+| Mapa | OpenLayers, OpenStreetMap |
+| APIs | OpenRouteService (geocodificação e rotas), Axios |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Estrutura
 
-### `npm run build`
+```
+src/
+├── components/
+│   ├── Map/            # Cria a instância do mapa OpenLayers
+│   └── Search/         # Campos de origem/destino com autocompletar
+├── hooks/
+│   └── useRouteLayer   # Desenha e remove a camada da rota no mapa
+├── Layers/             # Componentes de camada (TileLayer, VectorLayer)
+├── Controls/           # Controles do mapa (tela cheia)
+└── services/
+    └── openrouteservice.ts  # Cliente Axios com a chave de API
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Como rodar
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Pré-requisitos:** Node.js 18+ e uma chave gratuita da API do [OpenRouteService](https://openrouteservice.org/dev/#/signup).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone o repositório e instale as dependências:
 
-### `npm run eject`
+   ```bash
+   git clone https://github.com/Guenrick/Mapa-Web.git
+   cd Mapa-Web
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Crie um arquivo `.env` na raiz, a partir do `.env.example`, com a sua chave:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```
+   REACT_APP_ORS_API_KEY=sua_chave_aqui
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Inicie o servidor de desenvolvimento:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```bash
+   npm start
+   ```
 
-## Learn More
+   A aplicação abre em `http://localhost:3000`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> O arquivo `.env` está no `.gitignore` e não deve ser enviado ao repositório.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Próximos passos
 
-### Code Splitting
+- Permitir escolher o modo de deslocamento (a pé, bicicleta), que o hook `useRouteLayer` já suporta.
+- Exibir distância e tempo estimado da rota.
+- Mover as chamadas à API para um backend, para que a chave não fique exposta no navegador.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Autor
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Cauã Guenrick** · [LinkedIn](https://www.linkedin.com/in/caua-guenrick/) · [GitHub](https://github.com/Guenrick)
